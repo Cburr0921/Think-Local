@@ -1,9 +1,30 @@
 // Configuration ==============================================
+var qSearch = "pizza"
 var userLocation = "78729"
 var lat = 0
 var long = 0
 var city = ""
 var state = ""
+
+// Foursquare ==============================================
+const options = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'fsq3tG/J+x68WkLO19crXTBbrnDq/aCfvCO5YHaVAIeMPHs='
+    }
+  };
+  
+  fetch(`https://api.foursquare.com/v3/places/search?query=${qSearch}&near=${userLocation}`, options)
+    .then(res => res.json())
+    .then(data => {
+        console.log(data.results[0])
+    
+    })
+
+    .catch(err => console.error(err))
+
+
 // Accuweather ==============================================
 // Get location key from user zipcode
 function locationCode(){
@@ -27,3 +48,4 @@ function getWeatherConditions(weatherLocKey){
         console.log(data[0])
     })
 }
+

@@ -9,7 +9,19 @@
     
 </head>
 <body>
-  <div id="search-results"></div>
+    <form id="search-form">
+        <label for="zip">Zipcode of area you are wanting to search</label>
+        <input id="zip" type="text" required>
+        <label for="activities">What do you want to do?</label>
+
+        <select id="activities">
+        <option value="food">Food</option>
+        <option value="parks">Parks</option>
+        </select>
+        <button id="search-btn">search</button>
+    </form>
+    <div id="weather-results"></div>
+    <div id="search-results"></div>
 
   <script src="./assets/js/keys.js"></script>  
   <script src="./assets/js/app.js"></script>  

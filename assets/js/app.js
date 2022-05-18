@@ -1,5 +1,7 @@
 // Configuration ==============================================
-var userQuery = "pizza"
+var searchDiv = document.getElementById("search-results")
+
+var userQuery = "park"
 var userLocation = {
     zip: "78729",
     lat: 0,
@@ -46,14 +48,43 @@ const options = {
       Authorization: keys.foursquare
     }
   };
+
+  function createResultDivs(data){
+    searchDiv.innerHTML = "";
+
+    for(var i = 0; i < data.results.length; i++){
+        var meterToMile = data.results[i].distance / 1609;
+        var miles = meterToMile.toFixed(1);
+
+        var resultDiv = document.createElement("div");
+        resultDiv.setAttribute("id", "result-wrap");
+
+        var name = document.createElement("h2");
+        name.setAttribute("class", "biz-name");
+        name.textContent = data.results[i].name;
+
+        var bizLocation = document.createElement("h3");
+        bizLocation.setAttribute("class", "addy");
+        bizLocation.textContent = `Address: ${data.results[i].location.formatted_address}`;
+
+        var bDistance = document.createElement("h4");
+        bDistance.setAttribute("class", "distance");
+        bDistance.textContent = `Distance: ${miles} miles`;
+
+        resultDiv.append(name, bizLocation, bDistance);
+
+        searchDiv.appendChild(resultDiv);
+
+    }
+  }
   
   function getUserQuery(ll){
-    fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=8500`, options)
+    fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=16000`, options)
     .then(res => res.json())
     .then(data => {
-        console.log(data.results[0])
-        
-    
+        console.log(data.results);
+        createResultDivs(data);
+
     })
 
     .catch(err => console.error(err))

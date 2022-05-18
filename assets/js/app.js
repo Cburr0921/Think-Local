@@ -1,6 +1,8 @@
 // Configuration ==============================================
 var searchDiv = document.getElementById("search-results")
 
+var weatherResultsDiv = document.getElementById("weather-results")
+
 var userQuery = "park"
 var userLocation = {
     zip: "78729",
@@ -26,8 +28,30 @@ function locationCode(){
         getWeatherConditions(data[0].Key)
     })
 }
-locationCode();
+    //https://developer.accuweather.com/sites/default/files/07-s.png
 
+
+
+function weatherDiv(weather){
+    // display city, state, tempature, and icon
+    weatherResultsDiv.innerHTML = "";
+    var location = document.createElement("p")
+    location.textContent = `${userLocation.city}, ${userLocation.state}`
+
+    var tempature = document.createElement("p")
+    tempature.textContent = `${weather.Temperature.Imperial.Value} °F | ${weather.WeatherText}`
+
+    var icon = document.createElement("img")
+    var num =  `0${weather.WeatherIcon}`
+    icon.setAttribute("src", `https://developer.accuweather.com/sites/default/files/${(weather.WeatherIcon < 10? num : weather.WeatherIcon)}-s.png`)
+    icon.setAttribute("alt", weather.WeatherText)
+
+    weatherResultsDiv.append(location, tempature, icon)
+
+//weather.WeatherIcon
+
+
+}
 
 // get current conditions 
 function getWeatherConditions(weatherLocKey){
@@ -35,6 +59,7 @@ function getWeatherConditions(weatherLocKey){
     .then(res => res.json())
     .then(data => {
         console.log(data[0])
+        weatherDiv(data[0])
     })
 }
 
@@ -91,4 +116,14 @@ const options = {
 
   }
 
+document.addEventListener("click", function(event){
+    event.preventDefault()
+    if (event.target.id === "search-btn") {
+        userQuery = document.getElementById("activities").value
+        userLocation.zip = document.getElementById("zip").value
+        locationCode();
+        // reset the two values back to empty 
+    }
 
+
+})

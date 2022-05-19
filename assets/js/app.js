@@ -3,6 +3,8 @@ var searchDiv = document.getElementById("search-results")
 
 var weatherResultsDiv = document.getElementById("weather-results")
 
+var photoArray = [];
+
 var userQuery = "park"
 var userLocation = {
     zip: "78729",
@@ -74,23 +76,57 @@ const options = {
     }
   };
 
-  function createResultDivs(data){
-    searchDiv.innerHTML = "";
+function photoResults(resultsId){
+    fetch(`https://api.foursquare.com/v3/places/${resultsId}/photos`, options)
+    .then(res => res.json())
+    .then(data => {
+        // console.log(data[0])
+        var prefix = data[0].prefix
+        var suffix = data[0].suffix
+        var photoUrl = `${prefix}200x200${suffix}`
 
-    for(var i = 0; i < data.results.length; i++){
-        var meterToMile = data.results[i].distance / 1609;
+        var photoImg = document.createElement("img");
+        photoImg.setAttribute("src", photoUrl);
+        //some results don't have .classifications[0] to use alt text
+        // photoImg.setAttribute("alt", data[0].classifications[0]);
+        // console.log(photoImg)
+
+        //need fix, prepend in each new div and not all photos dumped in first div
+        photoArray.push(photoImg);
+
+    })
+    .catch(err => console.error(err));
+    
+}
+
+function addImg(){
+    console.log(photoArray)
+    var resultWraps = document.querySelectorAll(".result-wrap")
+    for(var i = 0; i < resultWraps.length; i++){
+        resultWraps[i].prepend(photoArray[i]);
+    }
+}
+
+function createResultDivs(data){
+    searchDiv.innerHTML = "";
+    var a = data.results
+    for(var i = 0; i < a.length; i++){
+        var meterToMile = a[i].distance / 1609;
         var miles = meterToMile.toFixed(1);
+        resultsId = a[i].fsq_id
+
+        photoResults(resultsId);
 
         var resultDiv = document.createElement("div");
-        resultDiv.setAttribute("id", "result-wrap");
+        resultDiv.setAttribute("class", "result-wrap");
 
         var name = document.createElement("h2");
         name.setAttribute("class", "biz-name");
-        name.textContent = data.results[i].name;
+        name.textContent = a[i].name;
 
         var bizLocation = document.createElement("h3");
         bizLocation.setAttribute("class", "addy");
-        bizLocation.textContent = `Address: ${data.results[i].location.formatted_address}`;
+        bizLocation.textContent = `Address: ${a[i].location.formatted_address}`;
 
         var bDistance = document.createElement("h4");
         bDistance.setAttribute("class", "distance");
@@ -99,22 +135,24 @@ const options = {
         resultDiv.append(name, bizLocation, bDistance);
 
         searchDiv.appendChild(resultDiv);
-
+    
+        
     }
-  }
+    setTimeout(addImg, 500)
   
-  function getUserQuery(ll){
+}
+  
+function getUserQuery(ll){
     fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=16000`, options)
     .then(res => res.json())
     .then(data => {
-        console.log(data.results);
         createResultDivs(data);
 
     })
 
     .catch(err => console.error(err))
 
-  }
+}
 
 document.addEventListener("click", function(event){
     event.preventDefault()
@@ -122,6 +160,7 @@ document.addEventListener("click", function(event){
         userQuery = document.getElementById("activities").value
         userLocation.zip = document.getElementById("zip").value
         locationCode();
+
         // reset the two values back to empty 
     }
 

@@ -3,7 +3,7 @@ var searchDiv = document.getElementById("search-results")
 
 var weatherResultsDiv = document.getElementById("weather-results")
 
-var photoArray = [];
+var photoArray = [null, null, null, null, null, null, null, null, null, null];
 
 var userQuery = "park"
 var userLocation = {
@@ -29,9 +29,12 @@ function locationCode(){
         getUserQuery(ll)
         getWeatherConditions(data[0].Key)
     })
-}
-    //https://developer.accuweather.com/sites/default/files/07-s.png
+    .catch(err => {
+        console.error(err)
+        searchDiv.textContent = "oops!... something went wrong, check your zip code and try again"
+    });
 
+}
 
 
 function weatherDiv(weather){
@@ -76,7 +79,7 @@ const options = {
     }
   };
 
-function photoResults(resultsId){
+function photoResults(resultsId, i, name){
     fetch(`https://api.foursquare.com/v3/places/${resultsId}/photos`, options)
     .then(res => res.json())
     .then(data => {
@@ -88,11 +91,11 @@ function photoResults(resultsId){
         var photoImg = document.createElement("img");
         photoImg.setAttribute("src", photoUrl);
         //some results don't have .classifications[0] to use alt text
-        // photoImg.setAttribute("alt", data[0].classifications[0]);
+        photoImg.setAttribute("alt", name);
         // console.log(photoImg)
 
         //need fix, prepend in each new div and not all photos dumped in first div
-        photoArray.push(photoImg);
+        photoArray[i] = photoImg;
 
     })
     .catch(err => console.error(err));
@@ -100,8 +103,7 @@ function photoResults(resultsId){
 }
 
 function addImg(){
-    console.log(photoArray)
-    var resultWraps = document.querySelectorAll(".result-wrap")
+    var resultWraps = document.querySelectorAll(".result-wrap");
     for(var i = 0; i < resultWraps.length; i++){
         resultWraps[i].prepend(photoArray[i]);
     }
@@ -115,7 +117,7 @@ function createResultDivs(data){
         var miles = meterToMile.toFixed(1);
         resultsId = a[i].fsq_id
 
-        photoResults(resultsId);
+        photoResults(resultsId, i, a[i].name);
 
         var resultDiv = document.createElement("div");
         resultDiv.setAttribute("class", "result-wrap");
@@ -138,7 +140,7 @@ function createResultDivs(data){
     
         
     }
-    setTimeout(addImg, 500)
+    setTimeout(addImg, 800)
   
 }
   
@@ -157,9 +159,17 @@ function getUserQuery(ll){
 document.addEventListener("click", function(event){
     event.preventDefault()
     if (event.target.id === "search-btn") {
-        userQuery = document.getElementById("activities").value
-        userLocation.zip = document.getElementById("zip").value
-        locationCode();
+        var actInput =  document.getElementById("activities")
+        var zipInput = document.getElementById("zip")
+        userQuery = actInput.value
+        userLocation.zip = zipInput.value
+        userLocation.zip.trim();
+        if(userLocation.zip.length > 0){
+            locationCode();
+
+        }
+        zipInput.value = ""
+        actInput.value = "food"
 
         // reset the two values back to empty 
     }

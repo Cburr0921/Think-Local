@@ -31,7 +31,7 @@ function locationCode(){
     })
     .catch(err => {
         console.error(err)
-        searchDiv.textContent = "oops!... something went wrong, check your zip code and try again"
+        searchDiv.textContent = "Oops!... Something went wrong, check your zip code and try again."
     });
 
 }
@@ -66,6 +66,10 @@ function getWeatherConditions(weatherLocKey){
         console.log(data[0])
         weatherDiv(data[0])
     })
+    .catch(err => {
+        console.error(err)
+        searchDiv.textContent = "Oops!... Something went wrong, check your zip code and try again."
+    });
 }
 
 
@@ -84,22 +88,21 @@ function photoResults(resultsId, i, name){
     .then(res => res.json())
     .then(data => {
         // console.log(data[0])
-        var prefix = data[0].prefix
-        var suffix = data[0].suffix
-        var photoUrl = `${prefix}200x200${suffix}`
+        var prefix = data[0].prefix;
+        var suffix = data[0].suffix;
+        var photoUrl = `${prefix}200x200${suffix}`;
 
         var photoImg = document.createElement("img");
         photoImg.setAttribute("src", photoUrl);
-        //some results don't have .classifications[0] to use alt text
         photoImg.setAttribute("alt", name);
-        // console.log(photoImg)
 
-        //need fix, prepend in each new div and not all photos dumped in first div
         photoArray[i] = photoImg;
 
     })
-    .catch(err => console.error(err));
-    
+    .catch(err => {
+        console.error(err)
+        searchDiv.textContent = "Oops!... Something went wrong, check your zip code and try again.";
+    });
 }
 
 function addImg(){
@@ -111,11 +114,11 @@ function addImg(){
 
 function createResultDivs(data){
     searchDiv.innerHTML = "";
-    var a = data.results
+    var a = data.results;
     for(var i = 0; i < a.length; i++){
         var meterToMile = a[i].distance / 1609;
         var miles = meterToMile.toFixed(1);
-        resultsId = a[i].fsq_id
+        resultsId = a[i].fsq_id;
 
         photoResults(resultsId, i, a[i].name);
 
@@ -140,39 +143,65 @@ function createResultDivs(data){
     
         
     }
-    setTimeout(addImg, 800)
+    setTimeout(addImg, 800);
   
 }
   
 function getUserQuery(ll){
-    fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=16000`, options)
+    fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=32000`, options)
     .then(res => res.json())
     .then(data => {
         createResultDivs(data);
 
     })
-
-    .catch(err => console.error(err))
-
+    .catch(err => {
+        console.error(err)
+        searchDiv.textContent = "Oops!... Something went wrong, check your zip code and try again.";
+    });
 }
 
 document.addEventListener("click", function(event){
-    event.preventDefault()
+    event.preventDefault();
+
     if (event.target.id === "search-btn") {
-        var actInput =  document.getElementById("activities")
-        var zipInput = document.getElementById("zip")
-        userQuery = actInput.value
-        userLocation.zip = zipInput.value
+        searchDiv.textContent = "";
+
+        var actInput =  document.getElementById("activities");
+        var zipInput = document.getElementById("zip");
+        userQuery = actInput.value;
+        userLocation.zip = zipInput.value;
         userLocation.zip.trim();
         if(userLocation.zip.length > 0){
             locationCode();
 
         }
-        zipInput.value = ""
-        actInput.value = "food"
+        zipInput.value = "";
+        actInput.value = "food";
 
         // reset the two values back to empty 
+    }if(event.target.id === "scroll-btn"){
+        topFunction();
     }
 
 
 })
+
+//Get the button
+var scrollBtn = document.getElementById("scroll-btn");
+
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    scrollBtn.style.display = "block";
+  } else {
+    scrollBtn.style.display = "none";
+  }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}

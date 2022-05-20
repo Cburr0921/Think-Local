@@ -3,3 +3,26 @@
     margin: 5px;
     border: solid blue 1px;
 }
+
+/* remove up down arrows from input box */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#scroll-btn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 10%;
+    z-index: 99;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    background-color: rgb(13, 0, 255);
+    color: white;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 4px;
+  }

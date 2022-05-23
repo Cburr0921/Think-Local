@@ -156,15 +156,25 @@ function photoResults(resultsId, i, name){
     .then(res => res.json())
     .then(data => {
         // console.log(data[0])
+        
+       
         var prefix = data[0].prefix;
         var suffix = data[0].suffix;
         var photoUrl = `${prefix}200x200${suffix}`;
+        
+        
+        var img = document.createElement("img");
+        img.setAttribute("class", "card-img-top");
+        img.setAttribute("src", photoUrl);
+        img.setAttribute("alt", name);
+        console.log(img)
 
-        var photoImg = document.createElement("img");
-        photoImg.setAttribute("src", photoUrl);
-        photoImg.setAttribute("alt", name);
 
-        photoArray[i] = photoImg;
+        // var photoImg = document.createElement("img");
+        // photoImg.setAttribute("src", photoUrl);
+        // photoImg.setAttribute("alt", name);
+        
+        photoArray[i] = img;
 
     })
     .catch(err => {
@@ -179,7 +189,16 @@ function addImg(){
         resultWraps[i].prepend(photoArray[i]);
     }
 }
-
+/*
+<div class="card mb-3">
+  <img src="..." class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">Card title</h5>
+    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+  </div>
+</div>
+*/
 function createResultDivs(data){
     searchDiv.innerHTML = "";
     var a = data.results;
@@ -190,24 +209,67 @@ function createResultDivs(data){
 
         photoResults(resultsId, i, a[i].name);
 
-        var resultDiv = document.createElement("div");
-        resultDiv.setAttribute("class", "result-wrap");
+        var card = document.createElement("div");
+        card.setAttribute("class", "card mb-3 result-wrap");
+        
 
-        var name = document.createElement("h2");
-        name.setAttribute("class", "biz-name");
-        name.textContent = a[i].name;
+        var cardBody = document.createElement("div");
+        cardBody.setAttribute("class", "card-body");
 
-        var bizLocation = document.createElement("h3");
-        bizLocation.setAttribute("class", "addy");
-        bizLocation.textContent = `Address: ${a[i].location.formatted_address}`;
+        var h5 = document.createElement("h5");
+        h5.setAttribute("class", "biz-name");
+        h5.textContent = a[i].name;
 
-        var bDistance = document.createElement("h4");
-        bDistance.setAttribute("class", "distance");
-        bDistance.textContent = `Distance: ${miles} miles`;
+        var pTag = document.createElement("p");
+        pTag.setAttribute("class", "card-text");
+        pTag.textContent = `Address: ${a[i].location.formatted_address}`;
 
-        resultDiv.append(name, bizLocation, bDistance);
+        var pDistanceTag = document.createElement("p");
+        pDistanceTag.setAttribute("class", "card-text");
+        pDistanceTag.textContent = `Distance: ${miles} miles`;
 
-        searchDiv.appendChild(resultDiv);
+        var directions = document.createElement("a")
+        directions.setAttribute("class", "btn btn-primary")
+        //113+N+Robertson+Blvd,+Los+Angeles,+CA+90048
+       
+        var fAddy = a[i].location.formatted_address
+        fAddy = fAddy.replace(/ /g, '+');
+        directions.setAttribute("href", `https://www.google.com/maps/place/${fAddy}/`)
+        directions.setAttribute("target", "_blank")
+        directions.textContent = "Get Directions"
+
+        cardBody.append(h5, pTag, pDistanceTag, directions);
+
+        card.appendChild(cardBody);
+
+        searchDiv.appendChild(card);
+
+
+        
+
+
+
+
+       
+
+        // var resultDiv = document.createElement("div");
+        // resultDiv.setAttribute("class", "result-wrap");
+
+        // var name = document.createElement("h2");
+        // name.setAttribute("class", "biz-name");
+        // name.textContent = a[i].name;
+
+        // var bizLocation = document.createElement("h3");
+        // bizLocation.setAttribute("class", "addy");
+        // bizLocation.textContent = `Address: ${a[i].location.formatted_address}`;
+
+        // var bDistance = document.createElement("h4");
+        // bDistance.setAttribute("class", "distance");
+        // bDistance.textContent = `Distance: ${miles} miles`;
+
+        // resultDiv.append(name, bizLocation, bDistance);
+
+        // searchDiv.appendChild(resultDiv);
     
         
     }
@@ -229,9 +291,10 @@ function getUserQuery(ll){
 }
 
 document.addEventListener("click", function(event){
-    event.preventDefault();
+   
 
     if (event.target.id === "search-btn") {
+        event.preventDefault();
         searchDiv.textContent = "";
 
         var actInput =  document.getElementById("activities");

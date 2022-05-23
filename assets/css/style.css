@@ -1,7 +1,12 @@
-#result-wrap {
-    padding: 8px;
-    margin: 5px;
-    border: solid blue 1px;
+.card-img-top{
+  width: 100%;
+}
+
+.card {
+  height: 600px;
+  width: 400px;
+  float: left;
+  margin: 5px;
 }
 
 /* remove up down arrows from input box */

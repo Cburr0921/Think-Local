@@ -59,8 +59,6 @@ input::-webkit-inner-spin-button {
   position: absolute;
   height: 250px;
   width: 245px;
-  /* border-top-left-radius: 50%;
-  border-bottom-left-radius: 50%; */
   background: linear-gradient(160deg, rgba(60, 192, 254, 0.7) 40%, rgba(0, 102, 255, 0.6));
   right: -120px;
   top: -60px;

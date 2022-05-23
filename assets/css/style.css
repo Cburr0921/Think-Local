@@ -26,3 +26,118 @@ input::-webkit-inner-spin-button {
     padding: 15px;
     border-radius: 4px;
   }
+
+/*Weather Widget ============================================*/
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+*, *:after, *:before {
+  box-sizing: border-box;
+}
+
+.container {
+  margin: 10px;
+  padding: 5px;
+  width: 405px;
+
+  justify-content: center;
+  align-items: center;
+  height: 24vh;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.widget {
+  background: linear-gradient(to bottom right, #3cc0fe 20%, #06f);
+  width: 300px;
+  height: 120px;
+  border-radius: 6px;
+  box-shadow: 0px 60px 80px -20px rgba(39, 165, 253, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.pictoBackdrop {
+  position: absolute;
+  height: 250px;
+  width: 245px;
+  /* border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%; */
+  background: linear-gradient(160deg, rgba(60, 192, 254, 0.7) 40%, rgba(0, 102, 255, 0.6));
+  right: -120px;
+  top: -60px;
+}
+
+.pictoFrame {
+  position: absolute;
+  background: rgba(60, 192, 254, 0.7);
+  border-radius: 50%;
+  box-shadow: 0px 50px 60px -20px #06f;
+  height: 111px;
+  width: 111px;
+  right: 5px;
+  top: 5px;
+}
+
+.details {
+  font-family: Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+
+.temperature {
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-weight: 300;
+  font-size: 3.5em;
+  margin-left: 5px !important;
+
+}
+
+.f-degree {
+  position: absolute;
+  top: -10px;
+  left: 80px;
+  font-size: 20px;
+}
+
+.summary {
+  color: #d2e9fa;
+  font-size: 16px;
+  font-weight: 300;
+  width: 160px;
+  margin-top: -16px;
+  padding-bottom: 2px;
+  margin-left: 6px;
+}
+
+.summaryText {
+  margin: 0;
+  padding-top: 10px;
+}
+
+.city-div, .state-div {
+  color: #d2e9fa;
+  font-size: 14px;
+  font-weight: 300;
+  margin-left: 8px !important;
+  line-height: -50px;
+
+}
+.city-div {
+  margin: 0;
+  padding-top: 2px;
+  border-top: 1px solid #9cd0ff;
+  width: 150px;
+
+}
+.state-div {
+  margin-top: 2px;
+}
+
+.weather-icon {
+  position: absolute;
+  height: 6rem;
+  left: -25px !important;
+  top: 10px;
+}

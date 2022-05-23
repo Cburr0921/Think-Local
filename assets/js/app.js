@@ -54,9 +54,77 @@ function weatherDiv(weather){
     weatherResultsDiv.append(location, tempature, icon)
 
 //weather.WeatherIcon
+}
 
+function weatherDiv(weather){
+    // display city, state, tempature, and icon
+    weatherResultsDiv.innerHTML = "";
+
+    var containerDiv = document.createElement("div");
+    containerDiv.setAttribute("class", "container")
+  
+    var widgetDiv = document.createElement("div");
+    widgetDiv.setAttribute("class", "widget");
+
+    var detailsDiv = document.createElement("div");
+    detailsDiv.setAttribute("class", "details");
+
+    var pictoCloudFillDiv = document.createElement("div");
+    pictoCloudFillDiv.setAttribute("class", "pictoCloudFill");
+
+    var iconCloudFillDiv = document.createElement("div");
+    iconCloudFillDiv.setAttribute("class", "iconCloudFill");
+
+    var wTemperatureDiv = document.createElement("div");
+    wTemperatureDiv.setAttribute("class", "temperature");
+    wTemperatureDiv.textContent = `${weather.Temperature.Imperial.Value}`;
+
+    var fDeg =  document.createElement("p");
+    fDeg.setAttribute("class", "f-degree");
+    fDeg.textContent = " °F";
+    wTemperatureDiv.appendChild(fDeg);
+
+    var summaryDiv = document.createElement("div");
+    summaryDiv.setAttribute("class", "summary");
+
+    var summaryTextDiv = document.createElement("p");
+    summaryTextDiv.setAttribute("class", "summaryText");
+    summaryTextDiv.textContent = `${weather.WeatherText}`;
+
+    var pictoBackdropDiv = document.createElement("div");
+    pictoBackdropDiv.setAttribute("class", "pictoBackdrop");
+
+    var pictoFrameDiv = document.createElement("div");
+    pictoFrameDiv.setAttribute("class", "pictoFrame");
+
+    var icon = document.createElement("img");
+    var num =  `0${weather.WeatherIcon}`;
+    icon.setAttribute("src", `https://developer.accuweather.com/sites/default/files/${(weather.WeatherIcon < 10? num : weather.WeatherIcon)}-s.png`);
+    icon.setAttribute("alt", weather.WeatherText);
+    icon.setAttribute("class", "weather-icon");
+
+    var cityStateDiv = document.createElement("div");
+    cityStateDiv.textContent = `${userLocation.city}, ${userLocation.state}`;
+    cityStateDiv.setAttribute("class", "city-div");
+
+    var wStateDiv = document.createElement("div");
+    wStateDiv.setAttribute("class", "state-div");
+    wStateDiv.textContent = `${userLocation.state}`;
+
+    detailsDiv.append(wTemperatureDiv, summaryDiv, cityStateDiv);
+
+    summaryDiv.appendChild(summaryTextDiv);
+    
+    pictoFrameDiv.appendChild(icon);
+
+    widgetDiv.append(pictoBackdropDiv, pictoFrameDiv, detailsDiv);
+
+    containerDiv.appendChild(widgetDiv);
+
+    weatherResultsDiv.appendChild(containerDiv);
 
 }
+
 
 // get current conditions 
 function getWeatherConditions(weatherLocKey){
@@ -148,7 +216,7 @@ function createResultDivs(data){
 }
   
 function getUserQuery(ll){
-    fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=32000`, options)
+    fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=17000`, options)
     .then(res => res.json())
     .then(data => {
         createResultDivs(data);

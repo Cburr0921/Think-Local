@@ -99,7 +99,7 @@ input::-webkit-inner-spin-button {
 
 .f-degree {
   position: absolute;
-  top: -10px;
+  top: 7px;
   left: 80px;
   font-size: 20px;
 }
@@ -116,7 +116,7 @@ input::-webkit-inner-spin-button {
 
 .summaryText {
   margin: 0;
-  padding-top: 10px;
+  padding-top: 0;
 }
 
 .city-div, .state-div {
@@ -143,4 +143,8 @@ input::-webkit-inner-spin-button {
   height: 6rem;
   left: -25px !important;
   top: 10px;
+}
+
+.hide {
+    display: none;
 }

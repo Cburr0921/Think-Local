@@ -1,4 +1,5 @@
 // Configuration ==============================================
+console.log("test")
 var searchDiv = document.getElementById("search-results")
 
 var weatherResultsDiv = document.getElementById("weather-results")
@@ -164,7 +165,7 @@ function photoResults(resultsId, i, name){
         
         
         var img = document.createElement("img");
-        img.setAttribute("class", "card-img-top");
+        img.setAttribute("class", "biz-img");
         img.setAttribute("src", photoUrl);
         img.setAttribute("alt", name);
         console.log(img)
@@ -190,14 +191,13 @@ function addImg(){
     }
 }
 /*
-<div class="card mb-3">
-  <img src="..." class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-  </div>
-</div>
+<!-- <figure class="mix work-item branding">
+    <img src="./assets/img/works/item-1.jpg" alt="">
+    <figcaption class="overlay">
+        <h4>Labore et dolore magnam</h4>
+        <p>Photography</p>
+    </figcaption>
+</figure> -->
 */
 function createResultDivs(data){
     searchDiv.innerHTML = "";
@@ -209,23 +209,23 @@ function createResultDivs(data){
 
         photoResults(resultsId, i, a[i].name);
 
-        var card = document.createElement("div");
-        card.setAttribute("class", "card mb-3 result-wrap");
+        var figure = document.createElement("figure");
+        figure.setAttribute("class", "mix work-item branding result-wrap");
         
 
-        var cardBody = document.createElement("div");
-        cardBody.setAttribute("class", "card-body");
+        var figCaption = document.createElement("figcaption");
+        figCaption.setAttribute("class", "overlay");
 
-        var h5 = document.createElement("h5");
-        h5.setAttribute("class", "biz-name");
-        h5.textContent = a[i].name;
+        var h4 = document.createElement("h4");
+        h4.setAttribute("class", "biz-name");
+        h4.textContent = a[i].name;
 
         var pTag = document.createElement("p");
-        pTag.setAttribute("class", "card-text");
+        pTag.setAttribute("class", "address");
         pTag.textContent = `Address: ${a[i].location.formatted_address}`;
 
         var pDistanceTag = document.createElement("p");
-        pDistanceTag.setAttribute("class", "card-text");
+        pDistanceTag.setAttribute("class", "distance");
         pDistanceTag.textContent = `Distance: ${miles} miles`;
 
         var directions = document.createElement("a")
@@ -238,12 +238,14 @@ function createResultDivs(data){
         directions.setAttribute("target", "_blank")
         directions.textContent = "Get Directions"
 
-        cardBody.append(h5, pTag, pDistanceTag, directions);
+        figCaption.append(h4, pTag, pDistanceTag, directions);
 
-        card.appendChild(cardBody);
+        figure.appendChild(figCaption);
 
-        searchDiv.appendChild(card);
+        searchDiv.appendChild(figure);
 
+        var actResults = document.getElementById("activity-results")
+        actResults.textContent = userQuery
 
         
 
@@ -317,22 +319,3 @@ document.addEventListener("click", function(event){
 
 })
 
-//Get the button
-var scrollBtn = document.getElementById("scroll-btn");
-
-// When the user scrolls down 20px from the top of the document, show the button
-window.onscroll = function() {scrollFunction()};
-
-function scrollFunction() {
-  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-    scrollBtn.style.display = "block";
-  } else {
-    scrollBtn.style.display = "none";
-  }
-}
-
-// When the user clicks on the button, scroll to the top of the document
-function topFunction() {
-  document.body.scrollTop = 0;
-  document.documentElement.scrollTop = 0;
-}

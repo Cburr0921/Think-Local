@@ -1,5 +1,4 @@
 // Configuration ==============================================
-console.log("test")
 var searchDiv = document.getElementById("search-results")
 
 var weatherResultsDiv = document.getElementById("weather-results")
@@ -21,7 +20,6 @@ function locationCode(){
     fetch(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${keys.weather}&q=${userLocation.zip}`)
     .then(res => res.json())
     .then(data => { 
-        console.log(data[0])
         userLocation.lat = data[0].GeoPosition.Latitude
         userLocation.long = data[0].GeoPosition.Longitude
         userLocation.city = data[0].EnglishName
@@ -132,7 +130,6 @@ function getWeatherConditions(weatherLocKey){
     fetch(`http://dataservice.accuweather.com/currentconditions/v1/${weatherLocKey}?apikey=${keys.weather}`)
     .then(res => res.json())
     .then(data => {
-        console.log(data[0])
         weatherDiv(data[0])
     })
     .catch(err => {
@@ -156,7 +153,6 @@ function photoResults(resultsId, i, name){
     fetch(`https://api.foursquare.com/v3/places/${resultsId}/photos`, options)
     .then(res => res.json())
     .then(data => {
-        // console.log(data[0])
         
        
         var prefix = data[0].prefix;
@@ -168,7 +164,6 @@ function photoResults(resultsId, i, name){
         img.setAttribute("class", "biz-img");
         img.setAttribute("src", photoUrl);
         img.setAttribute("alt", name);
-        console.log(img)
 
 
         // var photoImg = document.createElement("img");
@@ -210,7 +205,8 @@ function createResultDivs(data){
         photoResults(resultsId, i, a[i].name);
 
         var figure = document.createElement("figure");
-        figure.setAttribute("class", "mix work-item branding result-wrap");
+        figure.setAttribute("class", "work-item result-wrap");
+        //mix work-item branding
         
 
         var figCaption = document.createElement("figcaption");
@@ -280,9 +276,10 @@ function createResultDivs(data){
 }
   
 function getUserQuery(ll){
-    fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=17000`, options)
+    fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=17000&limit=20&offset=2649`, options)
     .then(res => res.json())
     .then(data => {
+        console.log(data)
         createResultDivs(data);
 
     })

@@ -1,5 +1,7 @@
 // Configuration ==============================================
+//christian
 //global variables
+var year = document.getElementById("year");
 var searchDiv = document.getElementById("search-results");
 var weatherResultsDiv = document.getElementById("weather-results");
 
@@ -14,7 +16,8 @@ var userLocation = {
     city: "",
     state: ""
 }
-
+//david
+year.innerText = new Date().getFullYear()
 // Accuweather ==============================================
 // Get location key from user zipcode
 function locationCode(){
@@ -36,7 +39,7 @@ function locationCode(){
 
 }
 
-
+//david
 function weatherDiv(weather){
     // display city, state, tempature, and icon
     weatherResultsDiv.innerHTML = "";
@@ -55,19 +58,19 @@ function weatherDiv(weather){
 
 //weather.WeatherIcon
 }
-
+//david
 function weatherDiv(weather){
     // display city, state, tempature, and icon
     weatherResultsDiv.innerHTML = "";
 
     var containerDiv = document.createElement("div");
-    containerDiv.setAttribute("class", "container")
+    containerDiv.setAttribute("class", "container-w")
   
     var widgetDiv = document.createElement("div");
     widgetDiv.setAttribute("class", "widget");
 
     var detailsDiv = document.createElement("div");
-    detailsDiv.setAttribute("class", "details");
+    detailsDiv.setAttribute("class", "details-w");
 
     var pictoCloudFillDiv = document.createElement("div");
     pictoCloudFillDiv.setAttribute("class", "pictoCloudFill");
@@ -76,11 +79,11 @@ function weatherDiv(weather){
     iconCloudFillDiv.setAttribute("class", "iconCloudFill");
 
     var wTemperatureDiv = document.createElement("div");
-    wTemperatureDiv.setAttribute("class", "temperature");
-    wTemperatureDiv.textContent = `${weather.Temperature.Imperial.Value} °F`;
+    wTemperatureDiv.setAttribute("class", "temperature-w");
+    wTemperatureDiv.innerHTML = `${weather.Temperature.Imperial.Value}<sup>°F</sup>`;
 
     var summaryDiv = document.createElement("div");
-    summaryDiv.setAttribute("class", "summary");
+    summaryDiv.setAttribute("class", "summary-w");
 
     var summaryTextDiv = document.createElement("p");
     summaryTextDiv.setAttribute("class", "summaryText");
@@ -122,6 +125,7 @@ function weatherDiv(weather){
 
 
 // get current conditions 
+//david
 function getWeatherConditions(weatherLocKey){
     fetch(`http://dataservice.accuweather.com/currentconditions/v1/${weatherLocKey}?apikey=${keys.weather}`)
     .then(res => res.json())
@@ -137,7 +141,8 @@ function getWeatherConditions(weatherLocKey){
 
 
 // Foursquare ==============================================
-//object with header and api key to pass in fetch request (required). 
+//object with header and api key to pass in fetch request (required).
+//christian 
 const options = {
     method: 'GET',
     headers: {
@@ -145,7 +150,7 @@ const options = {
       Authorization: keys.foursquare
     }
   };
-
+//christian
 function photoResults(resultsId, i, name){
     fetch(`https://api.foursquare.com/v3/places/${resultsId}/photos`, options)
     .then(res => res.json())
@@ -169,7 +174,7 @@ function photoResults(resultsId, i, name){
         searchDiv.textContent = "Oops!... Something went wrong, check your zip code and try again.";
     });
 }
-
+//christian
 function addImg(){
     var resultWraps = document.querySelectorAll(".result-wrap");
     //loop through prepending photo in same order with results
@@ -177,16 +182,8 @@ function addImg(){
         resultWraps[i].prepend(photoArray[i]);
     }
 }
-/*
-<!--    
-    <figure class="mix work-item branding">
-        <img src="./assets/img/works/item-1.jpg" alt="">
-        <figcaption class="overlay">
-            <h4>Labore et dolore magnam</h4>
-            <p>Photography</p>
-        </figcaption>
-    </figure> -->
-*/
+
+//christian
 //function that creates a div for each result, data is passed in
 function createResultDivs(data){
     //clear search div 
@@ -198,8 +195,10 @@ function createResultDivs(data){
         var meterToMile = a[i].distance / 1609;
         //reduce mile to tenths place example: 8.6748459 = 8.6 miles
         var miles = meterToMile.toFixed(1);
+        //get id of result to pass into function that creates photoResult
         resultsId = a[i].fsq_id;
 
+        //call function and pass in parameteters to create photo
         photoResults(resultsId, i, a[i].name);
         //create elements example on line 190
         var figure = document.createElement("figure");
@@ -221,7 +220,7 @@ function createResultDivs(data){
         pDistanceTag.textContent = `Distance: ${miles} miles`;
 
         var directions = document.createElement("a");
-        directions.setAttribute("id", "my-button");
+        directions.setAttribute("id", "directions-button");
         directions.setAttribute("class", "btn");
        
         var fAddy = a[i].location.formatted_address
@@ -238,13 +237,16 @@ function createResultDivs(data){
 
         var actResults = document.getElementById("activity-results")
         actResults.textContent = userQuery
+
+        var workSection = document.getElementById("works");
+        workSection.classList.remove("hide");
         
     }
     //4loop runs faster than api call can retrieve img object. SetTimeout of 800ms delay is fix
     setTimeout(addImg, 800);
   
 }
-  
+//christian  
 function getUserQuery(ll){
     fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=17000&limit=20&offset=2649`, options)
     .then(res => res.json())
@@ -261,6 +263,7 @@ function getUserQuery(ll){
 }
 
 //click event listener for whole page
+//david
 document.addEventListener("click", function(event){
     if (event.target.id === "search-btn") {
         //Prevents page from reloading

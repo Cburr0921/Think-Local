@@ -1,8 +1,9 @@
 // Configuration ==============================================
-var searchDiv = document.getElementById("search-results")
+//global variables
+var searchDiv = document.getElementById("search-results");
+var weatherResultsDiv = document.getElementById("weather-results");
 
-var weatherResultsDiv = document.getElementById("weather-results")
-
+//array needed to push images because of scoping issue
 var photoArray = [null, null, null, null, null, null, null, null, null, null];
 
 var userQuery = "park"
@@ -76,12 +77,7 @@ function weatherDiv(weather){
 
     var wTemperatureDiv = document.createElement("div");
     wTemperatureDiv.setAttribute("class", "temperature");
-    wTemperatureDiv.textContent = `${weather.Temperature.Imperial.Value}`;
-
-    var fDeg =  document.createElement("p");
-    fDeg.setAttribute("class", "f-degree");
-    fDeg.textContent = " °F";
-    wTemperatureDiv.appendChild(fDeg);
+    wTemperatureDiv.textContent = `${weather.Temperature.Imperial.Value} °F`;
 
     var summaryDiv = document.createElement("div");
     summaryDiv.setAttribute("class", "summary");
@@ -141,6 +137,7 @@ function getWeatherConditions(weatherLocKey){
 
 
 // Foursquare ==============================================
+//object with header and api key to pass in fetch request (required). 
 const options = {
     method: 'GET',
     headers: {
@@ -153,27 +150,21 @@ function photoResults(resultsId, i, name){
     fetch(`https://api.foursquare.com/v3/places/${resultsId}/photos`, options)
     .then(res => res.json())
     .then(data => {
-        
-       
+        //image path to object is broken up in 2 parts with Dimensions desired inbetween
         var prefix = data[0].prefix;
         var suffix = data[0].suffix;
         var photoUrl = `${prefix}200x200${suffix}`;
-        
         
         var img = document.createElement("img");
         img.setAttribute("class", "biz-img");
         img.setAttribute("src", photoUrl);
         img.setAttribute("alt", name);
 
-
-        // var photoImg = document.createElement("img");
-        // photoImg.setAttribute("src", photoUrl);
-        // photoImg.setAttribute("alt", name);
-        
         photoArray[i] = img;
 
     })
     .catch(err => {
+        //Errors from ajax/api call will console log and display "Opps!" message to page
         console.error(err)
         searchDiv.textContent = "Oops!... Something went wrong, check your zip code and try again.";
     });
@@ -181,34 +172,39 @@ function photoResults(resultsId, i, name){
 
 function addImg(){
     var resultWraps = document.querySelectorAll(".result-wrap");
+    //loop through prepending photo in same order with results
     for(var i = 0; i < resultWraps.length; i++){
         resultWraps[i].prepend(photoArray[i]);
     }
 }
 /*
-<!-- <figure class="mix work-item branding">
-    <img src="./assets/img/works/item-1.jpg" alt="">
-    <figcaption class="overlay">
-        <h4>Labore et dolore magnam</h4>
-        <p>Photography</p>
-    </figcaption>
-</figure> -->
+<!--    
+    <figure class="mix work-item branding">
+        <img src="./assets/img/works/item-1.jpg" alt="">
+        <figcaption class="overlay">
+            <h4>Labore et dolore magnam</h4>
+            <p>Photography</p>
+        </figcaption>
+    </figure> -->
 */
+//function that creates a div for each result, data is passed in
 function createResultDivs(data){
+    //clear search div 
     searchDiv.innerHTML = "";
     var a = data.results;
+    //loop through object array to create div 
     for(var i = 0; i < a.length; i++){
+        //convert meters to miles
         var meterToMile = a[i].distance / 1609;
+        //reduce mile to tenths place example: 8.6748459 = 8.6 miles
         var miles = meterToMile.toFixed(1);
         resultsId = a[i].fsq_id;
 
         photoResults(resultsId, i, a[i].name);
-
+        //create elements example on line 190
         var figure = document.createElement("figure");
         figure.setAttribute("class", "work-item result-wrap");
-        //mix work-item branding
         
-
         var figCaption = document.createElement("figcaption");
         figCaption.setAttribute("class", "overlay");
 
@@ -224,16 +220,16 @@ function createResultDivs(data){
         pDistanceTag.setAttribute("class", "distance");
         pDistanceTag.textContent = `Distance: ${miles} miles`;
 
-        var directions = document.createElement("a")
-        directions.setAttribute("class", "btn btn-primary")
-        //113+N+Robertson+Blvd,+Los+Angeles,+CA+90048
+        var directions = document.createElement("a");
+        directions.setAttribute("id", "my-button");
+        directions.setAttribute("class", "btn");
        
         var fAddy = a[i].location.formatted_address
         fAddy = fAddy.replace(/ /g, '+');
         directions.setAttribute("href", `https://www.google.com/maps/place/${fAddy}/`)
         directions.setAttribute("target", "_blank")
         directions.textContent = "Get Directions"
-
+        
         figCaption.append(h4, pTag, pDistanceTag, directions);
 
         figure.appendChild(figCaption);
@@ -242,35 +238,9 @@ function createResultDivs(data){
 
         var actResults = document.getElementById("activity-results")
         actResults.textContent = userQuery
-
-        
-
-
-
-
-       
-
-        // var resultDiv = document.createElement("div");
-        // resultDiv.setAttribute("class", "result-wrap");
-
-        // var name = document.createElement("h2");
-        // name.setAttribute("class", "biz-name");
-        // name.textContent = a[i].name;
-
-        // var bizLocation = document.createElement("h3");
-        // bizLocation.setAttribute("class", "addy");
-        // bizLocation.textContent = `Address: ${a[i].location.formatted_address}`;
-
-        // var bDistance = document.createElement("h4");
-        // bDistance.setAttribute("class", "distance");
-        // bDistance.textContent = `Distance: ${miles} miles`;
-
-        // resultDiv.append(name, bizLocation, bDistance);
-
-        // searchDiv.appendChild(resultDiv);
-    
         
     }
+    //4loop runs faster than api call can retrieve img object. SetTimeout of 800ms delay is fix
     setTimeout(addImg, 800);
   
 }
@@ -283,34 +253,39 @@ function getUserQuery(ll){
         createResultDivs(data);
 
     })
+    //any errors from ajax/api call will console log and display "Opps!" message to page
     .catch(err => {
         console.error(err)
         searchDiv.textContent = "Oops!... Something went wrong, check your zip code and try again.";
     });
 }
 
+//click event listener for whole page
 document.addEventListener("click", function(event){
-   
-
     if (event.target.id === "search-btn") {
+        //Prevents page from reloading
         event.preventDefault();
+        //clearing the search Div
         searchDiv.textContent = "";
 
+        //getting elements to hook onto
         var actInput =  document.getElementById("activities");
         var zipInput = document.getElementById("zip");
+
+        //get values from user (zipcode & activity) and push to object
         userQuery = actInput.value;
         userLocation.zip = zipInput.value;
+        //remove whitespace from user zip input
         userLocation.zip.trim();
+
         if(userLocation.zip.length > 0){
             locationCode();
-
         }
+        // reset the zip inputbox values empty after searach
         zipInput.value = "";
+        //Reset dropdown to food catagory after search
         actInput.value = "food";
 
-        // reset the two values back to empty 
-    }if(event.target.id === "scroll-btn"){
-        topFunction();
     }
 
 

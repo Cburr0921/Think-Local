@@ -1,13 +1,13 @@
 // Configuration ==============================================
 //christian
-//global variables
+//global variables grabbing items by id and saving them to a variable
 var year = document.getElementById("year");
 var searchDiv = document.getElementById("search-results");
 var weatherResultsDiv = document.getElementById("weather-results");
 
 //array to push images into because of scoping issue
 var photoArray = [null, null, null, null, null, null, null, null, null, null];
-
+//variable for users pick saved to a variable also object to enable us to fetch lat and long 
 var userQuery = "park"
 var userLocation = {
     zip: "78729",
@@ -148,8 +148,8 @@ function getWeatherConditions(weatherLocKey){
 }
 
 // Foursquare ==============================================
-//object with header and api key to pass in fetch request (required).
 //christian 
+//object with header and api key to pass in fetch request (required).
 const options = {
     method: 'GET',
     headers: {
@@ -158,6 +158,7 @@ const options = {
     }
   };
 //christian
+//function to fetch photos from foursquare 
 function photoResults(resultsId, i, name){
     fetch(`https://api.foursquare.com/v3/places/${resultsId}/photos`, options)
     .then(res => res.json())
@@ -167,11 +168,12 @@ function photoResults(resultsId, i, name){
         var suffix = data[0].suffix;
         var photoUrl = `${prefix}200x200${suffix}`;
         
+        // creating img and setting class,src, and alt text 
         var img = document.createElement("img");
         img.setAttribute("class", "biz-img");
         img.setAttribute("src", photoUrl);
         img.setAttribute("alt", name);
-
+        //pushing the img into the photoarray
         photoArray[i] = img;
 
     })
@@ -182,6 +184,7 @@ function photoResults(resultsId, i, name){
     });
 }
 //christian
+// function adding images from for loop 
 function addImg(){
     var resultWraps = document.querySelectorAll(".result-wrap");
     //loop through prepending photo in same order with results
@@ -207,25 +210,25 @@ function createResultDivs(data){
 
         //call function and pass in parameteters to create photo
         photoResults(resultsId, i, a[i].name);
-        //create elements example on line 190
+        //creating figure element and adding class
         var figure = document.createElement("figure");
         figure.setAttribute("class", "work-item result-wrap");
-        
+        //  creating figcatpion element and adding class to it 
         var figCaption = document.createElement("figcaption");
         figCaption.setAttribute("class", "overlay");
-
+        // creating h4 element and adding class and text to it 
         var h4 = document.createElement("h4");
         h4.setAttribute("class", "biz-name");
         h4.textContent = a[i].name;
-
+        // creating p tag and adding a class and text to it 
         var pTag = document.createElement("p");
         pTag.setAttribute("class", "address");
         pTag.textContent = `Address: ${a[i].location.formatted_address}`;
-
+        //creating a p tag and adding a class and text 
         var pDistanceTag = document.createElement("p");
         pDistanceTag.setAttribute("class", "distance");
         pDistanceTag.textContent = `Distance: ${miles} miles`;
-
+        // creating a  buttong for directions and adding a class and id to it 
         var directions = document.createElement("a");
         directions.setAttribute("id", "directions-button");
         directions.setAttribute("class", "btn");
@@ -235,16 +238,16 @@ function createResultDivs(data){
         directions.setAttribute("href", `https://www.google.com/maps/place/${fAddy}/`)
         directions.setAttribute("target", "_blank")
         directions.textContent = "Get Directions"
-        
+        // appending items to figcaotion 
         figCaption.append(h4, pTag, pDistanceTag, directions);
-
+        // appening figcaption to figure 
         figure.appendChild(figCaption);
-
+        // appending figure to the sarchdiv 
         searchDiv.appendChild(figure);
-
+        // getting activity-resuts by id and adding text to it from userQuery 
         var actResults = document.getElementById("activity-results")
         actResults.textContent = userQuery
-
+        // grabbing works by its id and removing the hide class
         var workSection = document.getElementById("works");
         workSection.classList.remove("hide");
         
@@ -253,7 +256,8 @@ function createResultDivs(data){
     setTimeout(addImg, 800);
   
 }
-//christian  
+//christian
+//fetch request for api getting a response and converting it to json then data then passing in data to the createResultsDivs function  
 function getUserQuery(ll){
     fetch(`https://api.foursquare.com/v3/places/search?query=${userQuery}&ll=${ll}&radius=17000&limit=20&offset=2649`, options)
     .then(res => res.json())

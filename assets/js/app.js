@@ -5,7 +5,7 @@ var year = document.getElementById("year");
 var searchDiv = document.getElementById("search-results");
 var weatherResultsDiv = document.getElementById("weather-results");
 
-//array needed to push images because of scoping issue
+//array to push images into because of scoping issue
 var photoArray = [null, null, null, null, null, null, null, null, null, null];
 
 var userQuery = "park"
@@ -16,22 +16,34 @@ var userLocation = {
     city: "",
     state: ""
 }
-//david
+
+//dynamically update the year in the footer
 year.innerText = new Date().getFullYear()
+
 // Accuweather ==============================================
 // Get location key from user zipcode
 function locationCode(){
     fetch(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${keys.weather}&q=${userLocation.zip}`)
     .then(res => res.json())
     .then(data => { 
+        //save/get the values from object to use when dynamically creating elements (pushing to object?) 
         userLocation.lat = data[0].GeoPosition.Latitude
         userLocation.long = data[0].GeoPosition.Longitude
         userLocation.city = data[0].EnglishName
         userLocation.state = data[0].AdministrativeArea.EnglishName
+
+        //saving the latitude and longitude as var ll 
+        //(seperated by comma because 4square api call requires this in fetch
         var ll = `${data[0].GeoPosition.Latitude},${data[0].GeoPosition.Longitude}`
+
+        //calling function and passing in ll variable from above
         getUserQuery(ll)
+        
+        //calling function and passing in data[0].key
+        //api requires two calls, one to retrieve key of location, then using that key to get weather conditions
         getWeatherConditions(data[0].Key)
     })
+    //any errors from ajax/api call will console log and display "Opps!" message to page
     .catch(err => {
         console.error(err)
         searchDiv.textContent = "Oops!... Something went wrong, check your zip code and try again."
@@ -39,76 +51,73 @@ function locationCode(){
 
 }
 
-//david
+//dynamically create the weather div, passing in data[0] but declaring it weather
 function weatherDiv(weather){
-    // display city, state, tempature, and icon
-    weatherResultsDiv.innerHTML = "";
-    var location = document.createElement("p")
-    location.textContent = `${userLocation.city}, ${userLocation.state}`
-
-    var tempature = document.createElement("p")
-    tempature.textContent = `${weather.Temperature.Imperial.Value} °F | ${weather.WeatherText}`
-
-    var icon = document.createElement("img")
-    var num =  `0${weather.WeatherIcon}`
-    icon.setAttribute("src", `https://developer.accuweather.com/sites/default/files/${(weather.WeatherIcon < 10? num : weather.WeatherIcon)}-s.png`)
-    icon.setAttribute("alt", weather.WeatherText)
-
-    weatherResultsDiv.append(location, tempature, icon)
-
-//weather.WeatherIcon
-}
-//david
-function weatherDiv(weather){
-    // display city, state, tempature, and icon
+    //clear div beforehand
     weatherResultsDiv.innerHTML = "";
 
+    //create div element w/class container-w
     var containerDiv = document.createElement("div");
     containerDiv.setAttribute("class", "container-w")
   
+    //create div element w/class widget
     var widgetDiv = document.createElement("div");
     widgetDiv.setAttribute("class", "widget");
 
+    //create div element w/class details-w
     var detailsDiv = document.createElement("div");
     detailsDiv.setAttribute("class", "details-w");
 
+    //create div element w/class pictoCloudFill
     var pictoCloudFillDiv = document.createElement("div");
     pictoCloudFillDiv.setAttribute("class", "pictoCloudFill");
 
+    //create div element w/class iconCloudFill
     var iconCloudFillDiv = document.createElement("div");
     iconCloudFillDiv.setAttribute("class", "iconCloudFill");
 
+    //create div element w/class temperature-w, text of current temperature, °F wrapped in sup element
     var wTemperatureDiv = document.createElement("div");
     wTemperatureDiv.setAttribute("class", "temperature-w");
     wTemperatureDiv.innerHTML = `${weather.Temperature.Imperial.Value}<sup>°F</sup>`;
 
+    //create div element w/class summary-w
     var summaryDiv = document.createElement("div");
     summaryDiv.setAttribute("class", "summary-w");
 
+    //create p element w/class summaryText and text of current weather conditions
     var summaryTextDiv = document.createElement("p");
     summaryTextDiv.setAttribute("class", "summaryText");
     summaryTextDiv.textContent = `${weather.WeatherText}`;
 
+    //create div element w/class pictoBackdrop
     var pictoBackdropDiv = document.createElement("div");
     pictoBackdropDiv.setAttribute("class", "pictoBackdrop");
 
+    //create div element w/class pictoFrame
     var pictoFrameDiv = document.createElement("div");
     pictoFrameDiv.setAttribute("class", "pictoFrame");
 
+    //create img element with icon and name of weather text and class weather-icon
+    //if number returned is < 0, turnary operator to add 0 before number value
+    //sometimes object returns single digit when two digits are always needed
     var icon = document.createElement("img");
     var num =  `0${weather.WeatherIcon}`;
     icon.setAttribute("src", `https://developer.accuweather.com/sites/default/files/${(weather.WeatherIcon < 10? num : weather.WeatherIcon)}-s.png`);
     icon.setAttribute("alt", weather.WeatherText);
     icon.setAttribute("class", "weather-icon");
 
+    //create p element with text city, state example: los angeles, california
     var cityStateDiv = document.createElement("div");
     cityStateDiv.textContent = `${userLocation.city}, ${userLocation.state}`;
     cityStateDiv.setAttribute("class", "city-div");
 
+    //create div element wclass state-div and text of state
     var wStateDiv = document.createElement("div");
     wStateDiv.setAttribute("class", "state-div");
     wStateDiv.textContent = `${userLocation.state}`;
-
+    
+    //append to display info how it will look on page
     detailsDiv.append(wTemperatureDiv, summaryDiv, cityStateDiv);
 
     summaryDiv.appendChild(summaryTextDiv);
@@ -119,26 +128,24 @@ function weatherDiv(weather){
 
     containerDiv.appendChild(widgetDiv);
 
+    //lastly append container to weather results div that lives in html
     weatherResultsDiv.appendChild(containerDiv);
-
 }
 
-
-// get current conditions 
-//david
+// get current conditions, pass in data[0].key from locationCode(). Rename to weatherLocKey
 function getWeatherConditions(weatherLocKey){
     fetch(`http://dataservice.accuweather.com/currentconditions/v1/${weatherLocKey}?apikey=${keys.weather}`)
     .then(res => res.json())
     .then(data => {
+        //call function from above and pass in data[0]
         weatherDiv(data[0])
     })
+    //Errors from ajax/api call will console log and also display "Opps!" message to page for user
     .catch(err => {
         console.error(err)
         searchDiv.textContent = "Oops!... Something went wrong, check your zip code and try again."
     });
 }
-
-
 
 // Foursquare ==============================================
 //object with header and api key to pass in fetch request (required).
@@ -263,8 +270,8 @@ function getUserQuery(ll){
 }
 
 //click event listener for whole page
-//david
 document.addEventListener("click", function(event){
+    //this IF happens when any element w/Id search-btn is clicked
     if (event.target.id === "search-btn") {
         //Prevents page from reloading
         event.preventDefault();
@@ -275,22 +282,20 @@ document.addEventListener("click", function(event){
         var actInput =  document.getElementById("activities");
         var zipInput = document.getElementById("zip");
 
-        //get values from user (zipcode & activity) and push to object
+        //get values from form (zipcode & activity) and push to object?
         userQuery = actInput.value;
         userLocation.zip = zipInput.value;
-        //remove whitespace from user zip input
+        //remove whitespace from user zip input box
         userLocation.zip.trim();
 
+        //runs only if zip code is entered  
         if(userLocation.zip.length > 0){
+            //runs function, get location key from user zipcode
             locationCode();
         }
-        // reset the zip inputbox values empty after searach
-        zipInput.value = "";
-        //Reset dropdown to food catagory after search
+        // reset the zip inputbox values empty 
+        //Reset dropdown to food activity 
         actInput.value = "food";
-
     }
-
-
 })
 

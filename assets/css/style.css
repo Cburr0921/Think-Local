@@ -12,7 +12,7 @@ input::-webkit-inner-spin-button {
 }
 
 #direction-button:hover {
-    background-color: rgba(11, 145, 118, 0.9); /* Green */
+    background-color: rgba(11, 145, 118, 0.9);
     color: white;
   }
 
@@ -40,11 +40,6 @@ input::-webkit-inner-spin-button {
     margin: 20px 0 10px;
 }
 
-
-.weather-icon {
-    height: 8rem;
-}
-
 .temperature {
     font-size: 30px;
 }
@@ -60,10 +55,6 @@ input::-webkit-inner-spin-button {
 
 /*Weather Widget ============================================*/
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
-/* *, *:after, *:before {
-  box-sizing: border-box;
-} */
-
 .container-w {
     margin: 10px auto;
     padding: 5px;
@@ -88,8 +79,6 @@ input::-webkit-inner-spin-button {
   position: absolute;
   height: 250px;
   width: 245px;
-  /* border-top-left-radius: 50%;
-  border-bottom-left-radius: 50%; */
   background: linear-gradient(160deg, rgba(60, 192, 254, 0.7) 40%, rgba(0, 102, 255, 0.6));
   right: -120px;
   top: -60px;
@@ -167,8 +156,8 @@ input::-webkit-inner-spin-button {
 }
 
 .weather-icon {
-  position: absolute;
-  height: 6rem;
-  left: -25px !important;
-  top: 10px;
+    position: absolute;
+    height: 9rem;
+    left: -21px !important;
+    top: 10px;
 }
